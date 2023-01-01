@@ -301,6 +301,8 @@ fork(void)
       np->ofile[i] = filedup(p->ofile[i]);
   np->cwd = idup(p->cwd);
 
+  np->mask=p->mask;
+
   safestrcpy(np->name, p->name, sizeof(p->name));
 
   pid = np->pid;
@@ -653,4 +655,14 @@ procdump(void)
     printf("%d %s %s", p->pid, state, p->name);
     printf("\n");
   }
+}
+
+//统计进程数
+uint64 nproc(void){
+  struct proc *p;
+  uint64 n=0;
+  for(p=proc; p<&proc[NPROC]; p++){
+    if(p->state!=UNUSED) n++;
+  }
+  return n;
 }

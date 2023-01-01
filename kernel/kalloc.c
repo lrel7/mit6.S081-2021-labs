@@ -14,13 +14,14 @@ void freerange(void *pa_start, void *pa_end);
 extern char end[]; // first address after kernel.
                    // defined by kernel.ld.
 
+//链表
 struct run {
   struct run *next;
 };
 
 struct {
   struct spinlock lock;
-  struct run *freelist;
+  struct run *freelist; //可用页
 } kmem;
 
 void
@@ -79,4 +80,14 @@ kalloc(void)
   if(r)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
+}
+
+uint64 freemem(void){
+  struct run *r=kmem.freelist;
+  uint64 n=0;
+  while(r){
+    n+=4096; //每一页的byte数为4096
+    r=r->next; //r移向下一个空页
+  }
+  return n;
 }
