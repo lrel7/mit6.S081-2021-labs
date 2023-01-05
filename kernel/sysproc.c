@@ -42,12 +42,12 @@ uint64
 sys_sbrk(void)
 {
   int addr;
-  int n;
+  int n; // bytes to allocatae
 
   if(argint(0, &n) < 0)
     return -1;
-  addr = myproc()->sz;
-  if(growproc(n) < 0)
+  addr = myproc()->sz; // the bottom of heap
+  if(growproc(n) < 0) // grow the upper bound of heap
     return -1;
   return addr;
 }
@@ -70,6 +70,7 @@ sys_sleep(void)
     sleep(&ticks, &tickslock);
   }
   release(&tickslock);
+  backtrace();
   return 0;
 }
 
@@ -95,3 +96,28 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+uint64 sys_sigalarm(void){
+  struct proc* p=myproc();
+  int interval;
+  uint64 handler;
+  if(argint(0, &interval)<0||argaddr(1, &handler)<0||interval<0){
+    return -1;
+  }
+  p->interval=interval;
+  p->handler=handler;
+  p->ticks=0;
+  p->allow_entry_handler=1;
+  return 0;
+}
+
+uint64 sys_sigreturn(void){
+  struct proc* p=myproc();
+  //copy back trapframe
+  memmove(p->trapframe, p->trapframecopy, sizeof(struct trapframe));
+
+  p->allow_entry_handler=1;
+  p->trapframecopy=0;
+  return 0;
+}
+

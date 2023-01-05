@@ -43,6 +43,9 @@ usertrap(void)
 
   // send interrupts and exceptions to kerneltrap(),
   // since we're now in the kernel.
+  // Let STVEC register points to where trap works
+  // in the kernel(kernelvec), instead of in the 
+  // user space
   w_stvec((uint64)kernelvec);
 
   struct proc *p = myproc();
@@ -50,14 +53,18 @@ usertrap(void)
   // save user program counter.
   p->trapframe->epc = r_sepc();
   
+  // find out what triggers trap
   if(r_scause() == 8){
     // system call
 
+    // check if it is because some other process kills
+    // the current process
     if(p->killed)
       exit(-1);
 
     // sepc points to the ecall instruction,
     // but we want to return to the next instruction.
+    // i.e. the next instruction after ecall
     p->trapframe->epc += 4;
 
     // an interrupt will change sstatus &c registers,
@@ -73,12 +80,31 @@ usertrap(void)
     p->killed = 1;
   }
 
+  // re-check if the current process is killed
+  // because we don't want to restore a killed process
   if(p->killed)
     exit(-1);
 
   // give up the CPU if this is a timer interrupt.
-  if(which_dev == 2)
-    yield();
+  if(which_dev == 2){
+    if(p->interval>0&&p->ticks==p->interval&&p->allow_entry_handler){
+      p->ticks=0;
+      p->allow_entry_handler=0; // keep 0 until handler returns
+
+      // save the whole trapframe before calling handler
+      p->trapframecopy=p->trapframe+512; // set the address of the copy(otherwise it's wild pointer)
+      memmove(p->trapframecopy, p->trapframe, sizeof(struct trapframe)); //copy
+
+      // the current page table is kernel's
+      // but handler refers to user space
+      // so we can't use handler directly here
+      // instead, we should save it in trapframe->epc
+      // which determines the instruction address
+      // at which the user-space code resumes execution
+      p->trapframe->epc=p->handler;
+    }
+    else p->ticks++;
+  }
 
   usertrapret();
 }
@@ -124,7 +150,8 @@ usertrapret(void)
   // jump to trampoline.S at the top of memory, which 
   // switches to the user page table, restores user registers,
   // and switches to user mode with sret.
-  uint64 fn = TRAMPOLINE + (userret - trampoline);
+  // calculate the address of userret(TRAMPOLINE+offset)
+  uint64 fn = TRAMPOLINE + (userret - trampoline); 
   ((void (*)(uint64,uint64))fn)(TRAPFRAME, satp);
 }
 
