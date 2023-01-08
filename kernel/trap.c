@@ -11,10 +11,13 @@ uint ticks;
 
 extern char trampoline[], uservec[], userret[];
 
+extern int ref_num[]; // kalloc.c
+
 // in kernelvec.S, calls kerneltrap().
 void kernelvec();
 
 extern int devintr();
+extern pte_t* walk(pagetable_t pagetable, uint64 va, int alloc);
 
 void
 trapinit(void)
@@ -27,6 +30,34 @@ void
 trapinithart(void)
 {
   w_stvec((uint64)kernelvec);
+}
+
+// cow handler
+int cow_handler(pagetable_t pagetable, uint64 va){
+  if(va>=MAXVA) return -1;
+  
+  pte_t *pte=walk(pagetable, va, 0); // get pte of va
+  if(pte==0) return -1;
+  if((*pte&PTE_U)==0 || (*pte&PTE_V)==0) return -1;
+
+  uint64 old_pa=PTE2PA(*pte); // the old page
+  uint64 new_pa=(uint64) kalloc(); // kalloc a new page
+  if(new_pa==0){
+    printf("cow kalloc failed\n");
+    return -1;
+  }
+
+  // copy data from old page to new page
+  memmove((void*)new_pa, (void*)old_pa, PGSIZE); 
+
+  kfree((void*)old_pa); // decrement the reference of the old page
+
+  // remap, modify pte
+  // because now we're in the "page fault process", whose pte
+  // should point to the new page
+  // also we set the flags
+  *pte=PA2PTE(new_pa) | PTE_V | PTE_U | PTE_R | PTE_W | PTE_X;
+  return 0;
 }
 
 //
@@ -65,7 +96,13 @@ usertrap(void)
     intr_on();
 
     syscall();
-  } else if((which_dev = devintr()) != 0){
+  }
+  else if(r_scause()==15){ // load page fault
+    // cow handler
+    if(cow_handler(p->pagetable, r_stval())<0)
+      p->killed=1;
+  } 
+  else if((which_dev = devintr()) != 0){
     // ok
   } else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);

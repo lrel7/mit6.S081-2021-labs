@@ -15,6 +15,8 @@ extern char etext[];  // kernel.ld sets this to end of kernel code.
 
 extern char trampoline[]; // trampoline.S
 
+extern int ref_num[]; // kalloc.c
+
 // Make a direct-map page table for the kernel.
 pagetable_t
 kvmmake(void)
@@ -297,26 +299,33 @@ uvmfree(pagetable_t pagetable, uint64 sz)
 // physical memory.
 // returns 0 on success, -1 on failure.
 // frees any allocated pages on failure.
+
+// cow : map but don't kalloc()
 int
 uvmcopy(pagetable_t old, pagetable_t new, uint64 sz)
 {
   pte_t *pte;
   uint64 pa, i;
   uint flags;
-  char *mem;
+  // char *mem;
 
   for(i = 0; i < sz; i += PGSIZE){
-    if((pte = walk(old, i, 0)) == 0)
+    if((pte = walk(old, i, 0)) == 0) // walk will create a new page
       panic("uvmcopy: pte should exist");
     if((*pte & PTE_V) == 0)
       panic("uvmcopy: page not present");
     pa = PTE2PA(*pte);
+    *pte &= ~PTE_W; // clear the PTE_W bit
     flags = PTE_FLAGS(*pte);
-    if((mem = kalloc()) == 0)
-      goto err;
-    memmove(mem, (char*)pa, PGSIZE);
-    if(mappages(new, i, PGSIZE, (uint64)mem, flags) != 0){
-      kfree(mem);
+    // if((mem = kalloc()) == 0)
+      // goto err;
+    // memmove(mem, (char*)pa, PGSIZE);
+
+    incre_ref((uint64)pa);
+
+    flags &= ~PTE_W;
+    if(mappages(new, i, PGSIZE, pa, flags) != 0){
+      // kfree(mem);
       goto err;
     }
   }
@@ -350,9 +359,26 @@ copyout(pagetable_t pagetable, uint64 dstva, char *src, uint64 len)
 
   while(len > 0){
     va0 = PGROUNDDOWN(dstva);
-    pa0 = walkaddr(pagetable, va0);
+    if(va0>MAXVA) return -1;
+
+    pte_t* pte=walk(pagetable, va0, 0);
+    if(pte==0 || (*pte&PTE_V)==0 || (*pte&PTE_U)==0)
+      return -1;
+    
+    // the only case in xv6 that a page
+    // is write-protected is that
+    // it's a cow page
+    if((*pte&PTE_W)==0){
+      if(cow_handler(pagetable, va0)<0)
+        return -1;
+    }
+
+    // pa0 = walkaddr(pagetable, va0);
+    pa0=PTE2PA(*pte);
+
     if(pa0 == 0)
       return -1;
+    
     n = PGSIZE - (dstva - va0);
     if(n > len)
       n = len;

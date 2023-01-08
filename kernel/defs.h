@@ -140,6 +140,7 @@ int             fetchaddr(uint64, uint64*);
 void            syscall();
 
 // trap.c
+int             cow_handler(pagetable_t pagetable, uint64 va);
 extern uint     ticks;
 void            trapinit(void);
 void            trapinithart(void);
@@ -154,6 +155,7 @@ void            uartputc_sync(int);
 int             uartgetc(void);
 
 // vm.c
+void            incre_ref(uint64);
 void            kvminit(void);
 void            kvminithart(void);
 void            kvmmap(pagetable_t, uint64, uint64, uint64, int);
