@@ -1,0 +1,1 @@
+2 threads simultaneously write into the same place?

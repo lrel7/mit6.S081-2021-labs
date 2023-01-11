@@ -538,6 +538,9 @@ sleep(void *chan, struct spinlock *lk)
   // so it's okay to release lk.
 
   acquire(&p->lock);  //DOC: sleeplock1
+  // now we hold p->lock, and wakeup is acquiring
+  // p->lock, so wakeup won't be working, it's ok
+  // to release lk now
   release(lk);
 
   // Go to sleep.
@@ -561,6 +564,11 @@ wakeup(void *chan)
 {
   struct proc *p;
 
+  // look at all proceses
+  // acquire its lock first
+  // if SLEEPING & channel consists
+  // modify to RUNNABLE
+  // at last release the lock
   for(p = proc; p < &proc[NPROC]; p++) {
     if(p != myproc()){
       acquire(&p->lock);

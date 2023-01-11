@@ -192,3 +192,22 @@ uartintr(void)
   uartstart();
   release(&uart_tx_lock);
 }
+
+// transmit buf[]
+// just for demonstration
+// void uartwrite(char buf[], int n){
+//   acquire(&uart_tx_lock);
+
+//   int i=0;
+//   while(i<n){
+//     while(tx_done==0){
+//       // UART is busy sending a char
+//       // wait for it to be done and interrupt
+//       sleep(&tx_chan, &uart_tx_lock);
+//     }
+
+//     WriteReg(THR, buf[i]);
+//   }
+
+//   release(&uart_tx_lock);
+// }
