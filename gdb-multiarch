@@ -1,0 +1,182 @@
+Desired=Unknown/Install/Remove/Purge/Hold
+| Status=Not/Inst/Conf-files/Unpacked/halF-conf/Half-inst/trig-aWait/Trig-pend
+|/ Err?=(none)/Reinst-required (Status,Err: uppercase=bad)
+||/ Name                                 Version                                 Architecture Description
++++-====================================-=======================================-============-================================================================================
+ii  acl                                  2.3.1-1                                 amd64        access control list - utilities
+ii  adduser                              3.118ubuntu5                            all          add and remove users and groups
+ii  adwaita-icon-theme                   41.0-1ubuntu1                           all          default icon theme of GNOME (small subset)
+ii  alsa-topology-conf                   1.2.5.1-2                               all          ALSA topology configuration files
+ii  alsa-ucm-conf                        1.2.6.3-1ubuntu1.1                      all          ALSA Use Case Manager configuration files
+ii  apparmor                             3.0.4-2ubuntu2.1                        amd64        user-space parser utility for AppArmor
+ii  apport                               2.20.11-0ubuntu82.3                     all          automatically generate crash reports for debugging
+ii  apport-symptoms                      0.24                                    all          symptom scripts for apport
+ii  apt                                  2.4.8                                   amd64        commandline package manager
+ii  apt-utils                            2.4.8                                   amd64        package management related utility programs
+ii  at-spi2-core                         2.44.0-3                                amd64        Assistive Technology Service Provider Interface (dbus core)
+ii  autoconf                             2.71-2                                  all          automatic configure script builder
+ii  automake                             1:1.16.5-1.3                            all          Tool for generating GNU Standards-compliant Makefiles
+ii  autotools-dev                        20220109.1                              all          Update infrastructure for config.{guess,sub} files
+ii  base-files                           12ubuntu4.2                             amd64        Debian base system miscellaneous files
+ii  base-passwd                          3.5.52build1                            amd64        Debian base system master password and group files
+ii  bash                                 5.1-6ubuntu1                            amd64        GNU Bourne Again SHell
+ii  bash-completion                      1:2.11-5ubuntu1                         all          programmable completion for the bash shell
+ii  bc                                   1.07.1-3build1                          amd64        GNU bc arbitrary precision calculator language
+ii  bind9-dnsutils                       1:9.18.1-1ubuntu1.2                     amd64        Clients provided with BIND 9
+ii  bind9-host                           1:9.18.1-1ubuntu1.2                     amd64        DNS Lookup Utility
+ii  bind9-libs:amd64                     1:9.18.1-1ubuntu1.2                     amd64        Shared Libraries used by BIND 9
+ii  binutils                             2.38-4ubuntu2.1                         amd64        GNU assembler, linker and binary utilities
+ii  binutils-common:amd64                2.38-4ubuntu2.1                         amd64        Common files for the GNU assembler, linker and binary utilities
+ii  binutils-riscv64-linux-gnu           2.38-4ubuntu2.1                         amd64        GNU binary utilities, for riscv64-linux-gnu target
+ii  binutils-x86-64-linux-gnu            2.38-4ubuntu2.1                         amd64        GNU binary utilities, for x86-64-linux-gnu target
+ii  bison                                2:3.8.2+dfsg-1build1                    amd64        YACC-compatible parser generator
+ii  bsdextrautils                        2.37.2-4ubuntu3                         amd64        extra utilities from 4.4BSD-Lite
+ii  bsdutils                             1:2.37.2-4ubuntu3                       amd64        basic utilities from 4.4BSD-Lite
+ii  build-essential                      12.9ubuntu3                             amd64        Informational list of build-essential packages
+ii  busybox-static                       1:1.30.1-7ubuntu3                       amd64        Standalone rescue shell with tons of builtin utilities
+ii  byobu                                5.133-1                                 all          text window manager, shell multiplexer, integrated DevOps environment
+ii  bzip2                                1.0.8-5build1                           amd64        high-quality block-sorting file compressor - utilities
+ii  ca-certificates                      20211016ubuntu0.22.04.1                 all          Common CA certificates
+ii  ca-certificates-java                 20190909                                all          Common CA certificates (JKS keystore)
+ii  command-not-found                    22.04.0                                 all          Suggest installation of packages in interactive bash sessions
+ii  console-setup                        1.205ubuntu3                            all          console font and keymap setup program
+ii  console-setup-linux                  1.205ubuntu3                            all          Linux specific part of console-setup
+ii  coreutils                            8.32-4.1ubuntu1                         amd64        GNU core utilities
+ii  cpio                                 2.13+dfsg-7                             amd64        GNU cpio -- a program to manage archives of files
+ii  cpp                                  4:11.2.0-1ubuntu1                       amd64        GNU C preprocessor (cpp)
+ii  cpp-11                               11.3.0-1ubuntu1~22.04                   amd64        GNU C preprocessor
+ii  cpp-11-riscv64-linux-gnu             11.3.0-1ubuntu1~22.04cross1             amd64        GNU C preprocessor
+ii  cpp-riscv64-linux-gnu                4:11.2.0--1ubuntu1                      amd64        GNU C preprocessor (cpp) for the riscv64 architecture
+ii  cpu-checker                          0.7-1.3build1                           amd64        tools to help evaluate certain CPU (or BIOS) features
+ii  cron                                 3.0pl1-137ubuntu3                       amd64        process scheduling daemon
+ii  curl                                 7.81.0-1ubuntu1.6                       amd64        command line tool for transferring data with URL syntax
+ii  dash                                 0.5.11+git20210903+057cd650a4ed-3build1 amd64        POSIX-compliant shell
+ii  dbus                                 1.12.20-2ubuntu4.1                      amd64        simple interprocess messaging system (daemon and utilities)
+ii  dbus-x11                             1.12.20-2ubuntu4.1                      amd64        simple interprocess messaging system (X11 deps)
+ii  dconf-gsettings-backend:amd64        0.40.0-3                                amd64        simple configuration storage system - GSettings back-end
+ii  dconf-service                        0.40.0-3                                amd64        simple configuration storage system - D-Bus service
+ii  debconf                              1.5.79ubuntu1                           all          Debian configuration management system
+ii  debconf-i18n                         1.5.79ubuntu1                           all          full internationalization support for debconf
+ii  debianutils                          5.5-1ubuntu2                            amd64        Miscellaneous utilities specific to Debian
+ii  diffutils                            1:3.8-0ubuntu2                          amd64        File comparison utilities
+ii  dirmngr                              2.2.27-3ubuntu2.1                       amd64        GNU privacy guard - network certificate management service
+ii  distro-info                          1.1build1                               amd64        provides information about the distributions' releases
+ii  distro-info-data                     0.52ubuntu0.2                           all          information about the distributions' releases (data files)
+ii  dmidecode                            3.3-3ubuntu0.1                          amd64        SMBIOS/DMI table decoder
+ii  dmsetup                              2:1.02.175-2.1ubuntu4                   amd64        Linux Kernel Device Mapper userspace library
+ii  dosfstools                           4.2-1build3                             amd64        utilities for making and checking MS-DOS FAT filesystems
+ii  dpkg                                 1.21.1ubuntu2.1                         amd64        Debian package management system
+ii  dpkg-dev                             1.21.1ubuntu2.1                         all          Debian package development tools
+ii  e2fsprogs                            1.46.5-2ubuntu1.1                       amd64        ext2/ext3/ext4 file system utilities
+ii  ed                                   1.18-1                                  amd64        classic UNIX line editor
+ii  eject                                2.37.2-4ubuntu3                         amd64        ejects CDs and operates CD-Changers under Linux
+ii  emacsen-common                       3.0.4                                   all          Common facilities for all emacsen
+ii  fakeroot                             1.28-1ubuntu1                           amd64        tool for simulating superuser privileges
+ii  file                                 1:5.41-3                                amd64        Recognize the type of data in a file using "magic" numbers
+ii  findutils                            4.8.0-1ubuntu3                          amd64        utilities for finding files--find, xargs
+ii  flex                                 2.6.4-8build2                           amd64        fast lexical analyzer generator
+ii  fontconfig                           2.13.1-4.2ubuntu5                       amd64        generic font configuration library - support binaries
+ii  fontconfig-config                    2.13.1-4.2ubuntu5                       all          generic font configuration library - configuration
+ii  fonts-dejavu-core                    2.37-2build1                            all          Vera font family derivate with additional characters
+ii  fonts-dejavu-extra                   2.37-2build1                            all          Vera font family derivate with additional characters (extra variants)
+ii  fonts-ubuntu                         0.83-6ubuntu1                           all          sans-serif font set from Ubuntu
+ii  friendly-recovery                    0.2.42                                  all          Make recovery boot mode more user-friendly
+ii  ftp                                  20210827-4build1                        all          dummy transitional package for tnftp
+ii  fuse3                                3.10.5-1build1                          amd64        Filesystem in Userspace (3.x version)
+ii  g++                                  4:11.2.0-1ubuntu1                       amd64        GNU C++ compiler
+ii  g++-11                               11.3.0-1ubuntu1~22.04                   amd64        GNU C++ compiler
+ii  gawk                                 1:5.1.0-1build3                         amd64        GNU awk, a pattern scanning and processing language
+ii  gcc                                  4:11.2.0-1ubuntu1                       amd64        GNU C compiler
+ii  gcc-11                               11.3.0-1ubuntu1~22.04                   amd64        GNU C compiler
+ii  gcc-11-base:amd64                    11.3.0-1ubuntu1~22.04                   amd64        GCC, the GNU Compiler Collection (base package)
+ii  gcc-11-cross-base-ports              11.3.0-1ubuntu1~22.04cross1             all          GCC, the GNU Compiler Collection (library base package)
+ii  gcc-11-riscv64-linux-gnu             11.3.0-1ubuntu1~22.04cross1             amd64        GNU C compiler (cross compiler for riscv64 architecture)
+ii  gcc-11-riscv64-linux-gnu-base:amd64  11.3.0-1ubuntu1~22.04cross1             amd64        GCC, the GNU Compiler Collection (base package)
+ii  gcc-12-base:amd64                    12.1.0-2ubuntu1~22.04                   amd64        GCC, the GNU Compiler Collection (base package)
+ii  gcc-12-cross-base-ports              12.1.0-2ubuntu1~22.04cross1             all          GCC, the GNU Compiler Collection (library base package)
+ii  gcc-riscv64-linux-gnu                4:11.2.0--1ubuntu1                      amd64        GNU C compiler for the riscv64 architecture
+ii  gdb                                  12.1-0ubuntu1~22.04                     amd64        GNU Debugger
+ii  gdb-multiarch                        12.1-0ubuntu1~22.04                     amd64        GNU Debugger (with support for multiple architectures)
+ii  gettext-base                         0.21-4ubuntu4                           amd64        GNU Internationalization utilities for the base system
+ii  gir1.2-glib-2.0:amd64                1.72.0-1                                amd64        Introspection data for GLib, GObject, Gio and GModule
+ii  gir1.2-packagekitglib-1.0            1.2.5-2ubuntu2                          amd64        GObject introspection data for the PackageKit GLib library
+ii  git                                  1:2.34.1-1ubuntu1.5                     amd64        fast, scalable, distributed revision control system
+ii  git-man                              1:2.34.1-1ubuntu1.5                     all          fast, scalable, distributed revision control system (manual pages)
+ii  glib-networking:amd64                2.72.0-1                                amd64        network-related giomodules for GLib
+ii  glib-networking-common               2.72.0-1                                all          network-related giomodules for GLib - data files
+ii  glib-networking-services             2.72.0-1                                amd64        network-related giomodules for GLib - D-Bus services
+ii  global                               6.6.7-1                                 amd64        Source code search and browse tools
+ii  gnupg                                2.2.27-3ubuntu2.1                       all          GNU privacy guard - a free PGP replacement
+ii  gnupg-l10n                           2.2.27-3ubuntu2.1                       all          GNU privacy guard - localization files
+ii  gnupg-utils                          2.2.27-3ubuntu2.1                       amd64        GNU privacy guard - utility programs
+ii  gperf                                3.1-1build1                             amd64        Perfect hash function generator
+ii  gpg                                  2.2.27-3ubuntu2.1                       amd64        GNU Privacy Guard -- minimalist public key operations
+ii  gpg-agent                            2.2.27-3ubuntu2.1                       amd64        GNU privacy guard - cryptographic agent
+ii  gpg-wks-client                       2.2.27-3ubuntu2.1                       amd64        GNU privacy guard - Web Key Service client
+ii  gpg-wks-server                       2.2.27-3ubuntu2.1                       amd64        GNU privacy guard - Web Key Service server
+ii  gpgconf                              2.2.27-3ubuntu2.1                       amd64        GNU privacy guard - core configuration utilities
+ii  gpgsm                                2.2.27-3ubuntu2.1                       amd64        GNU privacy guard - S/MIME version
+ii  gpgv                                 2.2.27-3ubuntu2.1                       amd64        GNU privacy guard - signature verification tool
+ii  grep                                 3.7-1build1                             amd64        GNU grep, egrep and fgrep
+ii  groff-base                           1.22.4-8build1                          amd64        GNU troff text-formatting system (base system components)
+ii  gsettings-desktop-schemas            42.0-1ubuntu1                           all          GSettings desktop-wide schemas
+ii  gstreamer1.0-plugins-base:amd64      1.20.1-1                                amd64        GStreamer plugins from the "base" set
+ii  gstreamer1.0-plugins-good:amd64      1.20.3-0ubuntu1                         amd64        GStreamer plugins from the "good" set
+ii  gstreamer1.0-x:amd64                 1.20.1-1                                amd64        GStreamer plugins for X11 and Pango
+ii  gtk-update-icon-cache                3.24.33-1ubuntu2                        amd64        icon theme caching utility
+ii  gzip                                 1.10-4ubuntu4.1                         amd64        GNU compression utilities
+ii  hdparm                               9.60+ds-1build3                         amd64        tune hard disk parameters for high performance
+ii  hicolor-icon-theme                   0.17-2                                  all          default fallback theme for FreeDesktop.org icon themes
+ii  hostname                             3.23ubuntu2                             amd64        utility to set/show the host name or domain name
+ii  htop                                 3.0.5-7build2                           amd64        interactive processes viewer
+ii  humanity-icon-theme                  0.6.16                                  all          Humanity Icon theme
+ii  ibverbs-providers:amd64              39.0-1                                  amd64        User space provider drivers for libibverbs
+ii  info                                 6.8-4build1                             amd64        Standalone GNU Info documentation browser
+ii  init                                 1.62                                    amd64        metapackage ensuring an init system is installed
+ii  init-system-helpers                  1.62                                    all          helper tools for all init systems
+ii  install-info                         6.8-4build1                             amd64        Manage installed documentation in info format
+ii  iproute2                             5.15.0-1ubuntu2                         amd64        networking and traffic control tools
+ii  iptables                             1.8.7-1ubuntu5                          amd64        administration tools for packet filtering and NAT
+ii  iputils-ping                         3:20211215-1                            amd64        Tools to test the reachability of network hosts
+ii  iputils-tracepath                    3:20211215-1                            amd64        Tools to trace the network path to a remote host
+ii  ipxe-qemu                            1.21.1+git-20220113.fbbdc3926-0ubuntu1  all          PXE boot firmware - ROM images for qemu
+ii  ipxe-qemu-256k-compat-efi-roms       1.0.0+git-20150424.a25a16d-0ubuntu4     all          PXE boot firmware - Compat EFI ROM images for qemu
+ii  irqbalance                           1.8.0-1build1                           amd64        Daemon to balance interrupts for SMP systems
+ii  isc-dhcp-client                      4.4.1-2.3ubuntu2.3                      amd64        DHCP client for automatically obtaining an IP address
+ii  isc-dhcp-common                      4.4.1-2.3ubuntu2.3                      amd64        common manpages relevant to all of the isc-dhcp packages
+ii  iso-codes                            4.9.0-1                                 all          ISO language, territory, currency, script codes and their translations
+ii  java-common                          0.72build2                              all          Base package for Java runtimes
+ii  kbd                                  2.3.0-3ubuntu4                          amd64        Linux console font and keytable utilities
+ii  keyboard-configuration               1.205ubuntu3                            all          system-wide keyboard preferences
+ii  kmod                                 29-1ubuntu1                             amd64        tools for managing Linux kernel modules
+ii  less                                 590-1build1                             amd64        pager program similar to more
+ii  libaa1:amd64                         1.4p5-50build1                          amd64        ASCII art library
+ii  libacl1:amd64                        2.3.1-1                                 amd64        access control list - shared library
+ii  libaio1:amd64                        0.3.112-13build1                        amd64        Linux kernel AIO access library - shared library
+ii  libalgorithm-diff-perl               1.201-1                                 all          module to find differences between files
+ii  libalgorithm-diff-xs-perl            0.04-6build3                            amd64        module to find differences between files (XS accelerated)
+ii  libalgorithm-merge-perl              0.08-3                                  all          Perl module for three-way merge of textual data
+ii  libapparmor1:amd64                   3.0.4-2ubuntu2.1                        amd64        changehat AppArmor library
+ii  libappstream4:amd64                  0.15.2-2                                amd64        Library to access AppStream services
+ii  libapt-pkg6.0:amd64                  2.4.8                                   amd64        package management runtime library
+ii  libargon2-1:amd64                    0~20171227-0.3                          amd64        memory-hard hashing function - runtime library
+ii  libasan6:amd64                       11.3.0-1ubuntu1~22.04                   amd64        AddressSanitizer -- a fast memory error detector
+ii  libasan6-riscv64-cross               11.3.0-1ubuntu1~22.04cross1             all          AddressSanitizer -- a fast memory error detector
+ii  libasound2:amd64                     1.2.6.1-1ubuntu1                        amd64        shared library for ALSA applications
+ii  libasound2-data                      1.2.6.1-1ubuntu1                        all          Configuration files and profiles for ALSA drivers
+ii  libassuan0:amd64                     2.5.5-1build1                           amd64        IPC library for the GnuPG components
+ii  libasyncns0:amd64                    0.8-6build2                             amd64        Asynchronous name service query library
+ii  libatk-bridge2.0-0:amd64             2.38.0-3                                amd64        AT-SPI 2 toolkit bridge - shared library
+ii  libatk-wrapper-java                  0.38.0-5build1                          all          ATK implementation for Java using JNI
+ii  libatk-wrapper-java-jni:amd64        0.38.0-5build1                          amd64        ATK implementation for Java using JNI (JNI bindings)
+ii  libatk1.0-0:amd64                    2.36.0-3build1                          amd64        ATK accessibility toolkit
+ii  libatk1.0-data                       2.36.0-3build1                          all          Common files for the ATK accessibility toolkit
+ii  libatm1:amd64                        1:2.5.1-4build2                         amd64        shared library for ATM (Asynchronous Transfer Mode)
+ii  libatomic1:amd64                     12.1.0-2ubuntu1~22.04                   amd64        support library providing __atomic built-in functions
+ii  libatomic1-riscv64-cross             12.1.0-2ubuntu1~22.04cross1             all          support library providing __atomic built-in functions
+ii  libatspi2.0-0:amd64                  2.44.0-3                                amd64        Assistive Technology Service Provider Interface - shared library
+ii  libattr1:amd64                       1:2.5.1-1build1                         amd64        extended attribute handling - shared library
+ii  libaudit-common                      1:3.0.7-1build1                         all          Dynamic library for security auditing - common files
+ii  libaudit1:amd64                      1:3.0.7-1build1                         amd64        Dynamic library for security auditing
+ii  libauthen-sasl-perl                  2.1600-1.1                              all          Authen::SASL - SASL Authentication framework
+ii  libavahi-client3:amd64               0.8-5ubuntu5                            amd64        Avahi c

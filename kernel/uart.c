@@ -39,10 +39,14 @@
 #define WriteReg(reg, v) (*(Reg(reg)) = (v))
 
 // the transmit output buffer.
-struct spinlock uart_tx_lock;
+struct spinlock uart_tx_lock; // only one lock for UART(coarse-grained lock)
 #define UART_TX_BUF_SIZE 32
 char uart_tx_buf[UART_TX_BUF_SIZE];
+// a write pointer provided for producer
+// indicates where to write in
 uint64 uart_tx_w; // write next to uart_tx_buf[uart_tx_w % UART_TX_BUF_SIZE]
+// a read pointer provided for consumer
+// indicates where to read from
 uint64 uart_tx_r; // read next from uart_tx_buf[uart_tx_r % UART_TX_BUF_SIZE]
 
 extern volatile int panicked; // from printf.c
@@ -56,6 +60,8 @@ uartinit(void)
   WriteReg(IER, 0x00);
 
   // special mode to set baud rate.
+  // baud rate -- the transmission rate
+  // of the serial port line
   WriteReg(LCR, LCR_BAUD_LATCH);
 
   // LSB for baud rate of 38.4K.
@@ -86,6 +92,7 @@ uartinit(void)
 void
 uartputc(int c)
 {
+  // get the lock
   acquire(&uart_tx_lock);
 
   if(panicked){
@@ -99,9 +106,11 @@ uartputc(int c)
       // wait for uartstart() to open up space in the buffer.
       sleep(&uart_tx_r, &uart_tx_lock);
     } else {
-      uart_tx_buf[uart_tx_w % UART_TX_BUF_SIZE] = c;
-      uart_tx_w += 1;
+      uart_tx_buf[uart_tx_w % UART_TX_BUF_SIZE] = c; // send the char into buffer
+      uart_tx_w += 1; // update write pointer
       uartstart();
+
+      // realse the lock
       release(&uart_tx_lock);
       return;
     }
@@ -150,12 +159,14 @@ uartstart()
       return;
     }
     
+    // read data form buffer, and update the read pointer
     int c = uart_tx_buf[uart_tx_r % UART_TX_BUF_SIZE];
     uart_tx_r += 1;
     
     // maybe uartputc() is waiting for space in the buffer.
     wakeup(&uart_tx_r);
     
+    // write data into the THR(Transmission Holding Register)
     WriteReg(THR, c);
   }
 }

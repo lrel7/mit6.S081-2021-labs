@@ -12,8 +12,8 @@ void
 plicinit(void)
 {
   // set desired IRQ priorities non-zero (otherwise disabled).
-  *(uint32*)(PLIC + UART0_IRQ*4) = 1;
-  *(uint32*)(PLIC + VIRTIO0_IRQ*4) = 1;
+  *(uint32*)(PLIC + UART0_IRQ*4) = 1; // enable UART interrupt
+  *(uint32*)(PLIC + VIRTIO0_IRQ*4) = 1; // enable interrupts from IO disk
 }
 
 void
@@ -32,8 +32,8 @@ plicinithart(void)
 int
 plic_claim(void)
 {
-  int hart = cpuid();
-  int irq = *(uint32*)PLIC_SCLAIM(hart);
+  int hart = cpuid(); // the current CPU tells PLIC that it's going to handle the interrupt
+  int irq = *(uint32*)PLIC_SCLAIM(hart); // PLIC_SCLAIM returns the interrupt ID
   return irq;
 }
 

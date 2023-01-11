@@ -11,15 +11,21 @@
 
 char *argv[] = { "sh", 0 };
 
+// the first process to run after OS starts
 int
 main(void)
 {
   int pid, wpid;
 
+  // create Console, fd==0
   if(open("console", O_RDWR) < 0){
     mknod("console", CONSOLE, 0);
     open("console", O_RDWR);
   }
+
+  // duplicate fd to create stdout & stderr
+  // get fd 1 & 2
+  // finally, fd 0, 1, 2 are used to represent Console
   dup(0);  // stdout
   dup(0);  // stderr
 

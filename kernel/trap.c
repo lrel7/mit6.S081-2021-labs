@@ -81,9 +81,8 @@ usertrap(void)
   // save user program counter.
   p->trapframe->epc = r_sepc();
   
+  // handle system call
   if(r_scause() == 8){
-    // system call
-
     if(p->killed)
       exit(-1);
 
@@ -97,11 +96,15 @@ usertrap(void)
 
     syscall();
   }
-  else if(r_scause()==15){ // load page fault
+
+  // handle page fault
+  else if(r_scause()==15){ 
     // cow handler
     if(cow_handler(p->pagetable, r_stval())<0)
       p->killed=1;
   } 
+
+  // handle interrupt
   else if((which_dev = devintr()) != 0){
     // ok
   } else {
@@ -213,16 +216,18 @@ clockintr()
 int
 devintr()
 {
+  // get the cause of the interrupt
+  // external, software or timer?
   uint64 scause = r_scause();
 
   if((scause & 0x8000000000000000L) &&
      (scause & 0xff) == 9){
     // this is a supervisor external interrupt, via PLIC.
 
-    // irq indicates which device interrupted.
+    // irq indicates which device interrupted by returning an ID
     int irq = plic_claim();
 
-    if(irq == UART0_IRQ){
+    if(irq == UART0_IRQ){ // UART interrupt
       uartintr();
     } else if(irq == VIRTIO0_IRQ){
       virtio_disk_intr();

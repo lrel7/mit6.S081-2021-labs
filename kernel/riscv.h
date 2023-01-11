@@ -275,7 +275,7 @@ r_time()
 static inline void
 intr_on()
 {
-  w_sstatus(r_sstatus() | SSTATUS_SIE);
+  w_sstatus(r_sstatus() | SSTATUS_SIE); // set SSTATUS register's bit on
 }
 
 // disable device interrupts

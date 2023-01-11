@@ -7,6 +7,9 @@
 
 .globl swtch
 swtch:
+        # a0:the first arg of swtch——the address of context
+        # of the current thread
+        # save registers of the current thread
         sd ra, 0(a0)
         sd sp, 8(a0)
         sd s0, 16(a0)
@@ -22,6 +25,9 @@ swtch:
         sd s10, 96(a0)
         sd s11, 104(a0)
 
+        # a0:the first arg of swtch——the address of context
+        # of the scheduler thread to switch to
+        # restore registers of the future thread
         ld ra, 0(a1)
         ld sp, 8(a1)
         ld s0, 16(a1)

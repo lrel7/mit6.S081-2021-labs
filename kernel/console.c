@@ -55,6 +55,7 @@ struct {
 //
 // user write()s to the console go here.
 //
+// can be considered as the TOP part of UART's driver
 int
 consolewrite(int user_src, uint64 src, int n)
 {
@@ -62,9 +63,9 @@ consolewrite(int user_src, uint64 src, int n)
 
   for(i = 0; i < n; i++){
     char c;
-    if(either_copyin(&c, user_src, src+i, 1) == -1)
+    if(either_copyin(&c, user_src, src+i, 1) == -1) // copy in the char
       break;
-    uartputc(c);
+    uartputc(c); // write the char to UART
   }
 
   return i;
@@ -181,9 +182,9 @@ consoleintr(int c)
 void
 consoleinit(void)
 {
-  initlock(&cons.lock, "cons");
+  initlock(&cons.lock, "cons"); // init lock
 
-  uartinit();
+  uartinit(); // init UART chip
 
   // connect read and write system calls
   // to consoleread and consolewrite.

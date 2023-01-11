@@ -84,10 +84,13 @@ enum procstate { UNUSED, USED, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
 
 // Per-process state
 struct proc {
-  struct spinlock lock;
-
+  // protect the update of state
+  // e.g., two scheduler thread of CPU won't pull out
+  // the same RUNABLE process and run it
+  // at the same time
+  struct spinlock lock; 
   // p->lock must be held when using these:
-  enum procstate state;        // Process state
+  enum procstate state;        // Process state:RUNNING, RUNABLE, SLEEPING
   void *chan;                  // If non-zero, sleeping on chan
   int killed;                  // If non-zero, have been killed
   int xstate;                  // Exit status to be returned to parent's wait
@@ -97,10 +100,13 @@ struct proc {
   struct proc *parent;         // Parent process
 
   // these are private to the process, so p->lock need not be held.
+  // kernel stack, where the function calls are saved
   uint64 kstack;               // Virtual address of kernel stack
   uint64 sz;                   // Size of process memory (bytes)
   pagetable_t pagetable;       // User page table
+  // trapframe:save registers of user space thread
   struct trapframe *trapframe; // data page for trampoline.S
+  // context:save registers of kernel space thread
   struct context context;      // swtch() here to run process
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory

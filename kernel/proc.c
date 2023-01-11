@@ -431,7 +431,7 @@ wait(uint64 addr)
 // Each CPU calls scheduler() after setting itself up.
 // Scheduler never returns.  It loops, doing:
 //  - choose a process to run.
-//  - swtch to start running that process.
+//  - switch to start running that process.
 //  - eventually that process transfers control
 //    via swtch back to the scheduler.
 void
@@ -440,21 +440,25 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   
-  c->proc = 0;
+  c->proc = 0; // clear the record of the current process
   for(;;){
     // Avoid deadlock by ensuring that devices can interrupt.
-    intr_on();
+    intr_on(); // enable device interrupt
 
+    // check all the runnable process
+    // find one to run
     for(p = proc; p < &proc[NPROC]; p++) {
-      acquire(&p->lock);
+      acquire(&p->lock); // get the lock of the current process
       if(p->state == RUNNABLE) {
         // Switch to chosen process.  It is the process's job
         // to release its lock and then reacquire it
         // before jumping back to us.
-        p->state = RUNNING;
+        p->state = RUNNING; // set the state to RUNNING
         c->proc = p;
-        swtch(&c->context, &p->context);
-
+        // save the registers of the scheduler
+        // and restore registers of the kernel thread
+        // of the current process
+        swtch(&c->context, &p->context); 
         // Process is done running for now.
         // It should have changed its p->state before coming back.
         c->proc = 0;
@@ -471,13 +475,15 @@ scheduler(void)
 // be proc->intena and proc->noff, but that would
 // break in the few places where a lock is held but
 // there's no process.
+
 void
 sched(void)
 {
   int intena;
   struct proc *p = myproc();
 
-  if(!holding(&p->lock))
+  // simply some checks
+  if(!holding(&p->lock)) // must be holding the lock of the current process
     panic("sched p->lock");
   if(mycpu()->noff != 1)
     panic("sched locks");
@@ -487,6 +493,9 @@ sched(void)
     panic("sched interruptible");
 
   intena = mycpu()->intena;
+  // save the register of the current kernel thread
+  // into p->context, and the register of the scheduler
+  // into c->context
   swtch(&p->context, &mycpu()->context);
   mycpu()->intena = intena;
 }
@@ -496,8 +505,8 @@ void
 yield(void)
 {
   struct proc *p = myproc();
-  acquire(&p->lock);
-  p->state = RUNNABLE;
+  acquire(&p->lock); // get the lock of the current process
+  p->state = RUNNABLE; // modify the state, but now it's locked, so other schedulers can't see it
   sched();
   release(&p->lock);
 }
