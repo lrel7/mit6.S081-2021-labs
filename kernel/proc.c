@@ -353,6 +353,7 @@ exit(int status)
     }
   }
 
+  // release cwd(current working directory)
   begin_op();
   iput(p->cwd);
   end_op();
@@ -360,7 +361,7 @@ exit(int status)
 
   acquire(&wait_lock);
 
-  // Give any children to init.
+  // Give any children to init(pid=1).
   reparent(p);
 
   // Parent might be sleeping in wait().
@@ -391,14 +392,15 @@ wait(uint64 addr)
 
   for(;;){
     // Scan through table looking for exited children.
+    // exited children:parent is the current process, and state is ZOMBIE
     havekids = 0;
     for(np = proc; np < &proc[NPROC]; np++){
-      if(np->parent == p){
+      if(np->parent == p){ // np's parent is the current process
         // make sure the child isn't still in exit() or swtch().
         acquire(&np->lock);
 
         havekids = 1;
-        if(np->state == ZOMBIE){
+        if(np->state == ZOMBIE){ // np's state is ZOMBIE
           // Found one.
           pid = np->pid;
           if(addr != 0 && copyout(p->pagetable, addr, (char *)&np->xstate,
@@ -407,7 +409,7 @@ wait(uint64 addr)
             release(&wait_lock);
             return -1;
           }
-          freeproc(np);
+          freeproc(np); // complete some final steps for exiting the child process
           release(&np->lock);
           release(&wait_lock);
           return pid;
@@ -588,6 +590,8 @@ kill(int pid)
 {
   struct proc *p;
 
+  // scan to find the target process
+  // do nothing but set the process's killed to 1
   for(p = proc; p < &proc[NPROC]; p++){
     acquire(&p->lock);
     if(p->pid == pid){

@@ -109,7 +109,7 @@ piperead(struct pipe *pi, uint64 addr, int n)
   struct proc *pr = myproc();
   char ch;
 
-  acquire(&pi->lock);
+  acquire(&pi->lock); // condition lock for sleep()
   while(pi->nread == pi->nwrite && pi->writeopen){  //DOC: pipe-empty
     if(pr->killed){
       release(&pi->lock);
@@ -125,6 +125,6 @@ piperead(struct pipe *pi, uint64 addr, int n)
       break;
   }
   wakeup(&pi->nwrite);  //DOC: piperead-wakeup
-  release(&pi->lock);
+  release(&pi->lock); // release the condition lock, which is reacquired by sleep() when it returns
   return i;
 }
