@@ -149,10 +149,10 @@ end_op(void)
   int do_commit = 0;
 
   acquire(&log.lock);
-  log.outstanding -= 1;
-  if(log.committing)
+  log.outstanding -= 1; // # of current fs operations
+  if(log.committing) // if log is commiting
     panic("log.committing");
-  if(log.outstanding == 0){
+  if(log.outstanding == 0){ // all operations are ready, so do the commit
     do_commit = 1;
     log.committing = 1;
   } else {
@@ -197,7 +197,7 @@ commit()
     write_log();     // Write modified blocks from cache to log
     write_head();    // Write header to disk -- the real commit
     install_trans(0); // Now install writes to home locations
-    log.lh.n = 0;
+    log.lh.n = 0; // clear log
     write_head();    // Erase the transaction from the log
   }
 }

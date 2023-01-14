@@ -249,6 +249,7 @@ create(char *path, short type, short major, short minor)
 
   ilock(dp);
 
+  // demultiplex the path to find the last directory
   if((ip = dirlookup(dp, name, 0)) != 0){
     iunlockput(dp);
     ilock(ip);
@@ -258,6 +259,7 @@ create(char *path, short type, short major, short minor)
     return 0;
   }
 
+  // if the file already exits
   if((ip = ialloc(dp->dev, type)) == 0)
     panic("create: ialloc");
 
@@ -313,6 +315,36 @@ sys_open(void)
       iunlockput(ip);
       end_op();
       return -1;
+    }
+  }
+
+  if(ip->type==T_SYMLINK && !(omode&O_NOFOLLOW)){
+    int depth=0;
+    
+    while(ip->type==T_SYMLINK){
+      // read out the content of the symlink into path
+      if(readi(ip, 0, (uint64)path, 0, MAXPATH)==-1){
+        iunlockput(ip);
+        end_op();
+        return -1;
+      }
+
+      iunlockput(ip);
+
+      // find the inode of the path
+      if((ip=namei(path))==0){
+        end_op();
+        return -1;
+      }
+
+      ilock(ip);
+      depth++;
+      // the links form a cycle
+      if(depth>10){
+        iunlockput(ip);
+        end_op();
+        return -1;
+      }
     }
   }
 
@@ -482,5 +514,30 @@ sys_pipe(void)
     fileclose(wf);
     return -1;
   }
+  return 0;
+}
+
+uint64 sys_symlink(void){
+  char target[MAXPATH], path[MAXPATH];
+  struct inode* ip;
+  // get & check the args
+  if(argstr(0, target, MAXPATH)<0 || argstr(1, path, MAXPATH)<0)
+    return -1;
+
+  // transaction
+  begin_op();
+  if((ip=create(path, T_SYMLINK, 0, 0))==0){
+    end_op();
+    return -1;
+  }
+
+  if(writei(ip, 0, (uint64)target, 0, MAXPATH)<MAXPATH){
+    iunlockput(ip);
+    end_op();
+    return -1;
+  }
+
+  iunlockput(ip);
+  end_op();
   return 0;
 }

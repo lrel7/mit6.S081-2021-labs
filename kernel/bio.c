@@ -65,7 +65,7 @@ bget(uint dev, uint blockno)
   // Is the block already cached?
   for(b = bcache.head.next; b != &bcache.head; b = b->next){
     if(b->dev == dev && b->blockno == blockno){
-      b->refcnt++;
+      b->refcnt++; // increment the reference count
       release(&bcache.lock);
       acquiresleep(&b->lock);
       return b;
