@@ -484,3 +484,91 @@ sys_pipe(void)
   }
   return 0;
 }
+
+uint64 sys_mmap(void){
+  uint64 addr;
+  int len, prot, flags, fd, i;
+
+  // get the args
+  if(argint(1, &len)<0 || argint(2, &prot)<0 ||
+      argint(3, &flags)<0 || argint(4, &fd)<0){
+        return -1;
+  }
+
+  struct proc* p=myproc();
+  struct file* mfile=p->ofile[fd];
+
+  // not allow shared mapping a file opened READONLY
+  if((!mfile->writable) && (flags&MAP_SHARED) && (prot&PROT_WRITE)){
+    return -1;
+  }
+
+  // find an unsed region in the process's address space
+  // in which to map the file
+  for(i=0; i<NVMA; i++){
+    if(p->vmas[i].valid==0){
+      p->vmas[i].valid=1;
+      p->vmas[i].addr=addr=p->sz;
+      p->vmas[i].len=len;
+      p->vmas[i].prot=prot;
+      p->vmas[i].flags=flags;
+      p->vmas[i].mfile=mfile;
+      filedup(mfile); // increment ref of the file
+      break;
+    }
+  }
+
+  // no vma left
+  if(i==NVMA)
+    return -1;
+
+  p->sz+=len; //  lazy mapping
+  return addr;
+}
+
+uint64 sys_munmap(void){
+  uint64 addr;
+  int len, i;
+
+  // get the args
+  if(argaddr(0, &addr)<0 || argint(1, &len)<0)
+    return -1;
+
+  // find the corresponding VMA for the address
+  struct proc* p=myproc();
+  for(i=0; i<NVMA; i++){
+    if(p->vmas[i].valid && p->vmas[i].addr<=addr
+        && p->vmas[i].addr+p->vmas[i].len>addr)
+      break;
+  }
+  // no VMA
+  if(i==NVMA) 
+    return -1;
+
+  // write back the unmapping page
+  if(p->vmas[i].flags & MAP_SHARED)
+    filewrite(p->vmas[i].mfile, addr, len);
+
+  for(uint64 va=addr; va<addr+len-PGSIZE; va+=PGSIZE){
+      uint64 pa = walkaddr(p->pagetable, va);
+      if(pa != 0){
+        uvmunmap(p->pagetable, va, PGSIZE, 1);
+      }
+  }
+
+  // if the whole VMM is unmapped
+  // decrement the ref of the file
+  // and invalidate VMM
+  if(p->vmas[i].len==len){
+    fileclose(p->vmas[i].mfile);
+    p->vmas[i].valid=0;
+  }
+
+  // modify the addr & len
+  // unmap from the beginning
+  else if(p->vmas[i].addr==addr)
+    p->vmas[i].addr+=len;
+  p->vmas[i].len-=len;
+  
+  return 0;
+}

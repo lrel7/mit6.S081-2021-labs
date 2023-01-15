@@ -5,6 +5,10 @@
 #include "spinlock.h"
 #include "proc.h"
 #include "defs.h"
+#include "sleeplock.h"
+#include "fs.h"
+#include "file.h"
+#include "fcntl.h"
 
 struct spinlock tickslock;
 uint ticks;
@@ -65,7 +69,74 @@ usertrap(void)
     intr_on();
 
     syscall();
-  } else if((which_dev = devintr()) != 0){
+  }
+
+  // handle page fault
+  else if(r_scause()==13 || r_scause()==15){
+
+    if(p->killed)
+      exit(-1);
+
+    // get the pagefault address
+    // and check if it's between sp & sz
+    uint64 va=r_stval();
+    if(va>=p->sz || va<p->trapframe->sp){
+      p->killed=1;
+    }
+
+    else{
+      // check if vma is among the VMM
+      int i;
+      for(i=0; i<NVMA; i++){
+        if(p->vmas[i].valid==1 && p->vmas[i].addr<=va 
+            && (p->vmas[i].addr+p->vmas[i].len)>va)
+           break; 
+      }
+      if(i==NVMA) // not in VMA
+        p->killed=1;
+          
+      // va is amont the VMM
+      // allocate page
+      else{
+        // kalloc & check
+        uint64 ka;
+        if((ka=(uint64)kalloc())==0)
+          p->killed=1;
+        
+        else{
+          // init the page to 0
+          memset((void*)ka, 0, PGSIZE);
+          // find the bottom of va's page
+          va=PGROUNDDOWN(va);
+
+          // read data from the file to ka
+          struct inode* ip=p->vmas[i].mfile->ip;
+          ilock(ip);
+          readi(ip, 0, ka, va-p->vmas[i].addr, PGSIZE);
+          iunlock(ip);
+
+          // set permission
+          uint64 perm=PTE_U;
+          if(p->vmas[i].prot&PROT_READ)
+            perm |= PTE_R;
+          if(p->vmas[i].prot&PROT_WRITE)
+            perm |= PTE_W;
+
+          // map the page
+          if(mappages(p->pagetable, va, PGSIZE, ka, perm)!=0){
+            kfree((void*)ka);
+            p->killed=1;
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+  else if((which_dev = devintr()) != 0){
     // ok
   } else {
     printf("usertrap(): unexpected scause %p pid=%d\n", r_scause(), p->pid);
