@@ -1,4 +1,5 @@
 // Sleeping locks
+// protect a single block
 
 #include "types.h"
 #include "riscv.h"
