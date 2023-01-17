@@ -1,8 +1,8 @@
 #include "types.h"
 #include "riscv.h"
+#include "param.h"
 #include "defs.h"
 #include "date.h"
-#include "param.h"
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
@@ -42,12 +42,13 @@ uint64
 sys_sbrk(void)
 {
   int addr;
-  int n; // bytes to allocatae
+  int n;
 
   if(argint(0, &n) < 0)
     return -1;
-  addr = myproc()->sz; // the bottom of heap
-  if(growproc(n) < 0) // grow the upper bound of heap
+  
+  addr = myproc()->sz;
+  if(growproc(n) < 0)
     return -1;
   return addr;
 }
@@ -57,6 +58,7 @@ sys_sleep(void)
 {
   int n;
   uint ticks0;
+
 
   if(argint(0, &n) < 0)
     return -1;
@@ -70,9 +72,38 @@ sys_sleep(void)
     sleep(&ticks, &tickslock);
   }
   release(&tickslock);
-  backtrace();
   return 0;
 }
+
+
+#ifdef LAB_PGTBL
+int
+sys_pgaccess(void)
+{
+  // lab pgtbl: your code here.
+  uint64 va; //第一个参数: 第一页的第一个va
+  int n; //第二个参数: 需要检查的页数
+  uint64 buffer; //第三个参数: 储存结果的bitmask
+  pte_t* pte;
+  struct proc* p=myproc(); //当前进程
+  uint64 abits=0;
+
+  if(argaddr(0, &va)<0||argint(1, &n)<0||argaddr(2, &buffer)<0) //获取三个参数
+    return -1;
+  
+  for(int i=0; i<n; i++, va+=PGSIZE){
+    pte=walk(p->pagetable, va, 0);
+    if(*pte&PTE_A){ //如果PTE的A位被置1(accessed)
+      abits|=(1L<<i);
+      *pte&=~PTE_A; //清空PTE_A位(置回0)
+    }
+  }
+
+  copyout(p->pagetable, buffer, (char*)&abits, sizeof(uint64));
+
+  return 0;
+}
+#endif
 
 uint64
 sys_kill(void)
@@ -95,29 +126,5 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
-}
-
-uint64 sys_sigalarm(void){
-  struct proc* p=myproc();
-  int interval;
-  uint64 handler;
-  if(argint(0, &interval)<0||argaddr(1, &handler)<0||interval<0){
-    return -1;
-  }
-  p->interval=interval;
-  p->handler=handler;
-  p->ticks=0;
-  p->allow_entry_handler=1;
-  return 0;
-}
-
-uint64 sys_sigreturn(void){
-  struct proc* p=myproc();
-  //copy back trapframe
-  memmove(p->trapframe, p->trapframecopy, sizeof(struct trapframe));
-
-  p->allow_entry_handler=1;
-  p->trapframecopy=0;
-  return 0;
 }
 

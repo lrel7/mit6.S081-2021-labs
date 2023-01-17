@@ -1,11 +1,11 @@
 	#
-        # code to switch between user and kernel space.(trampoline means 蹦床)
+        # code to switch between user and kernel space.
         #
         # this code is mapped at the same virtual address
         # (TRAMPOLINE) in user and kernel space so that
         # it continues to work when it switches page tables.
 	#
-	# kernel.ld causes this to be aligneds
+	# kernel.ld causes this to be aligned
         # to a page boundary.
         #
 	.section trampsec
@@ -65,23 +65,18 @@ uservec:
         sd t0, 112(a0)
 
         # restore kernel stack pointer from p->trapframe->kernel_sp
-        # let sp(stack pointer) points to the top of the kernel stack
         ld sp, 8(a0)
 
         # make tp hold the current hartid, from p->trapframe->kernel_hartid
-        # hartid holds the number of the current CPU core(xv6 only has 1 core)
         ld tp, 32(a0)
 
         # load the address of usertrap(), p->trapframe->kernel_trap
-        # usertrap() is the first C function we're going to execute
         ld t0, 16(a0)
 
         # restore kernel page table from p->trapframe->kernel_satp
-        ld t1, 0(a0) # load the address of kernel page table into t1
-        csrw satp, t1 # exchange satp and t1, so that satp points to kernel page table now
+        ld t1, 0(a0)
+        csrw satp, t1
         sfence.vma zero, zero
-
-        # now, we jump from user space to kernel space
 
         # a0 is no longer valid, since the kernel page
         # table does not specially map p->tf.
@@ -99,7 +94,6 @@ userret:
 
         # switch to the user page table.
         csrw satp, a1
-        # clear the cache of the page table
         sfence.vma zero, zero
 
         # put the saved user a0 in sscratch, so we
